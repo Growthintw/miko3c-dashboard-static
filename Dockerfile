@@ -1,4 +1,5 @@
-FROM nginx:alpine
-COPY . /usr/share/nginx/html
-COPY default.conf.template /etc/nginx/templates/default.conf.template
-CMD ["nginx", "-g", "daemon off;"]
+FROM python:3.12-alpine
+WORKDIR /app
+COPY . /app
+EXPOSE 8080
+CMD ["sh", "-c", "python -m http.server ${PORT:-8080} --bind 0.0.0.0"]
