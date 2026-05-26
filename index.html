@@ -1,0 +1,1994 @@
+<!doctype html>
+<html lang="zh-Hant">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>miko3C SEO 半年成果報告（2025/11–2026/04）</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #fff;
+      --ink: #182433;
+      --muted: #5a6b80;
+      --brand: #0b66c3;
+      --line: #dce4ef;
+      --ok: #1f9d55;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+
+    .deck {
+      max-width: 1180px;
+      margin: 20px auto 44px;
+      padding: 0 14px;
+    }
+
+    .toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 9;
+      background: #ffffffee;
+      backdrop-filter: blur(4px);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px;
+      margin-bottom: 12px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .toolbar button {
+      border: 1px solid #b6d3f6;
+      background: #e9f3ff;
+      color: #084b8a;
+      border-radius: 10px;
+      padding: 8px 10px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .toolbar .status { color: var(--muted); font-size: 13px; }
+    .toolbar .substatus { width: 100%; color: var(--muted); font-size: 12px; }
+    .cover-logo {
+      width: 120px;
+      height: auto;
+      display: block;
+      margin: 4px 0 6px;
+    }
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .tab-btn {
+      border: 1px solid #b6d3f6;
+      background: #eef6ff;
+      color: #084b8a;
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .tab-btn.active {
+      background: #0b66c3;
+      color: #fff;
+      border-color: #0b66c3;
+    }
+    .view.hidden { display: none; }
+
+    .slide {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 16px;
+      min-height: 540px;
+    }
+
+    .kicker {
+      display: inline-block;
+      font-size: 12px;
+      background: #eaf4ff;
+      border: 1px solid #cfe4ff;
+      color: #0b4f95;
+      border-radius: 999px;
+      padding: 4px 9px;
+    }
+
+    h1, h2 { margin: 10px 0; line-height: 1.25; }
+    h1 { font-size: 34px; }
+    h2 { font-size: 26px; }
+
+    .meta { color: var(--muted); }
+
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .box {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      background: #fbfdff;
+    }
+
+    .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+
+    .kpi {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+    }
+
+    .kpi .label { color: var(--muted); font-size: 13px; }
+    .kpi .value { font-size: 22px; font-weight: 700; }
+
+    .up { color: var(--ok); font-size: 13px; }
+
+    .footer {
+      margin-top: 12px;
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    ul { margin: 8px 0 0 20px; }
+    li { margin: 6px 0; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      font-size: 14px;
+    }
+
+    th, td {
+      border: 1px solid var(--line);
+      padding: 8px;
+      text-align: left;
+    }
+    td.editable-action {
+      background: #fffdf5;
+      outline: none;
+      min-width: 340px;
+    }
+    td.editable-action:focus {
+      box-shadow: inset 0 0 0 2px #facc15;
+      background: #fffbea;
+    }
+
+    th { background: #f3f8ff; }
+
+    .chart-box {
+      margin-top: 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      padding: 10px;
+      height: 280px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .chart-box canvas {
+      width: 100% !important;
+      height: 100% !important;
+      display: block;
+    }
+
+    @media (max-width:900px) {
+      .grid2, .kpis { grid-template-columns: 1fr; }
+      .slide { min-height: auto; }
+      .chart-box { height: 240px; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="deck">
+    <div class="toolbar">
+      <button id="refreshBtn" type="button">更新所有數據</button>
+      <button id="loadXlsxBtn" type="button">載入 XLSX 排名</button>
+      <input id="xlsxFileInput" type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" style="display:none" />
+      <button id="restoreCacheBtn" type="button">還原快取</button>
+      <button id="clearCacheBtn" type="button">清除快取</button>
+      <button id="exportHtmlBtn" type="button">輸出 HTML</button>
+      <span class="status" id="status">尚未更新</span>
+      <span class="substatus" id="cacheInfo">快取：未載入</span>
+    </div>
+    <div class="tabs">
+      <button id="tabCase" class="tab-btn active" type="button">成果報告</button>
+      <button id="tabRank" class="tab-btn" type="button">關鍵字排名</button>
+    </div>
+
+    <section id="viewCase" class="view">
+    <section class="slide"><span class="kicker">P.01 封面</span>
+      <img class="cover-logo" src="data:image/png;base64,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" alt="零一行銷 Logo" />
+      <h1>miko3C SEO 半年成果報告</h1>
+      <p class="meta">期間：2025/11–2026/04｜報告對象：miko3C 高層</p>
+      <div class="box">
+        <h3>簡報大綱</h3>
+        <ul>
+          <li>P.01 原始問題：網站三大痛點與改善方向</li>
+          <li>P.02 整體環境：曝光、流量、排名變化</li>
+          <li>P.03 架構頁對比：1月 vs 4月實際表現</li>
+          <li>P.04 關鍵字成長與內容貢獻</li>
+          <li>P.05 新文/舊文貢獻：內容類型拆解</li>
+          <li>P.06 第一頁成果：上首頁關鍵字成長</li>
+          <li>P.07~P.08 方法與策略總結</li>
+        </ul>
+      </div>
+      <div class="box" style="margin-top:12px;">
+        <h3>網站原始問題（三大問題）</h3>
+        <ol>
+          <li>缺乏 H1-H3：重要架構頁（7頁） -> 重新設計頁面 SEO 架構
+            <ul id="p1ProblemArchPages">
+              <li>更新後顯示</li>
+            </ul>
+          </li>
+          <li>舊文流量下降：原有舊文網址與相關成效
+            <table>
+              <thead><tr><th>舊文網址</th><th>2025/11 曝光</th><th>2026/04 曝光</th><th>2025/11 流量</th><th>2026/04 流量</th><th>上首頁關鍵字（2026/04）</th></tr></thead>
+              <tbody id="p1ProblemOldPostsRows">
+                <tr><td colspan="6">更新後顯示</td></tr>
+              </tbody>
+            </table>
+          </li>
+          <li>關鍵字競爭激烈：電信常見關鍵字與機會字（目標：上第一頁）
+            <table>
+              <thead><tr><th>日期</th><th>機會關鍵字</th><th>目前排名</th><th>曝光</th></tr></thead>
+              <tbody id="p1ProblemKeywordOpsRows">
+                <tr><td colspan="4">更新後顯示</td></tr>
+              </tbody>
+            </table>
+          </li>
+        </ol>
+      </div>
+      <div class="footer"><span>miko3C SEO Result Report</span><span>1 / 10</span></div>
+    </section>
+
+    <section class="slide"><span class="kicker">P.02 整體環境</span>
+      <h2>2025/11 vs 2026/04：曝光與流量對比</h2>
+      <div class="kpis">
+        <div class="kpi"><div class="label">曝光量（2026/04）</div><div class="value" id="kpiAprImp">-</div><div class="up" id="kpiImpGrowth">-</div></div>
+        <div class="kpi"><div class="label">流量（2026/04 點擊）</div><div class="value" id="kpiAprClk">-</div><div class="up" id="kpiClkGrowth">-</div></div>
+        <div class="kpi"><div class="label">第一頁關鍵字（2026/04）</div><div class="value" id="kpiPage1Apr">-</div><div class="up" id="kpiPage1Growth">-</div></div>
+      </div>
+      <div class="grid2">
+        <div class="box"><h3>2025/11</h3><ul><li>曝光：<b id="novImp">-</b></li><li>點擊：<b id="novClk">-</b></li><li>CTR：<b id="novCtr">-</b></li><li>關鍵字排名：<b id="novPos">-</b></li></ul></div>
+        <div class="box"><h3>2026/04</h3><ul><li>曝光：<b id="aprImp">-</b></li><li>點擊：<b id="aprClk">-</b></li><li>CTR：<b id="aprCtr">-</b></li><li>關鍵字排名：<b id="aprPos">-</b></li></ul></div>
+      </div>
+      <div class="grid2">
+        <div class="chart-box"><canvas id="chartOverallImp"></canvas></div>
+        <div class="chart-box"><canvas id="chartOverallClk"></canvas></div>
+      </div>
+      <div class="box" style="margin-top:12px;">
+        <h3>三品牌月份折線圖（流量 Traffic）</h3>
+        <div class="chart-box"><canvas id="chartBrandMonthlyTraffic"></canvas></div>
+      </div>
+      <div class="footer"><span>Overall Performance</span><span>2 / 10</span></div>
+    </section>
+
+    <section class="slide"><span class="kicker">P.03 架構頁對比</span>
+      <h2>架構頁：2026/01 vs 2026/04 實際表現</h2>
+      <div class="kpis">
+        <div class="kpi"><div class="label">1月曝光</div><div class="value" id="archJanImp">-</div></div>
+        <div class="kpi"><div class="label">4月曝光</div><div class="value" id="archAprImp">-</div></div>
+        <div class="kpi"><div class="label">1月流量（點擊）</div><div class="value" id="archJanClk">-</div></div>
+        <div class="kpi"><div class="label">4月流量（點擊）</div><div class="value" id="archAprClk">-</div></div>
+      </div>
+      <div class="kpis" style="margin-top:10px;">
+        <div class="kpi"><div class="label">1月上首頁關鍵字個數</div><div class="value" id="archJanTop10">-</div></div>
+        <div class="kpi"><div class="label">4月上首頁關鍵字個數</div><div class="value" id="archAprTop10">-</div></div>
+        <div class="kpi"><div class="label">曝光成長</div><div class="value" id="archImpGrowth">-</div></div>
+        <div class="kpi"><div class="label">流量成長</div><div class="value" id="archClkGrowth">-</div></div>
+      </div>
+      <div class="grid2" style="margin-top:12px;">
+        <div class="chart-box"><canvas id="chartArchImp"></canvas></div>
+        <div class="chart-box"><canvas id="chartArchClk"></canvas></div>
+      </div>
+      <div class="chart-box"><canvas id="chartArchTop10"></canvas></div>
+      <div class="box" style="margin-top:12px;">
+        <h3>架構頁完整比較表（1月 vs 4月）</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>網址</th>
+              <th>1月曝光</th>
+              <th>4月曝光</th>
+              <th>1月流量</th>
+              <th>4月流量</th>
+              <th>1月上第一頁關鍵字個數</th>
+              <th>4月上第一頁關鍵字個數</th>
+              <th>1月Top5關鍵字曝光</th>
+              <th>4月Top5關鍵字曝光</th>
+            </tr>
+          </thead>
+          <tbody id="archAllCompareRows"><tr><td colspan="9">更新後顯示</td></tr></tbody>
+        </table>
+      </div>
+      <div class="footer"><span>Architecture Page Comparison</span><span>3 / 10</span></div>
+    </section>
+
+    <section class="slide"><span class="kicker">P.04 競爭大字</span>
+      <h2>全站關鍵字：Top20（依曝光）</h2>
+      <table>
+        <thead><tr><th>關鍵字</th><th>目前排名</th><th>曝光</th></tr></thead>
+        <tbody id="siteTopRows"><tr><td colspan="3">更新後顯示</td></tr></tbody>
+      </table>
+      <h2>競爭關鍵字：上第一頁（Position <= 10）</h2>
+      <table>
+        <thead><tr><th>關鍵字</th><th>目前排名</th><th>曝光</th></tr></thead>
+        <tbody id="bigKeywordRows"><tr><td colspan="3">更新後顯示</td></tr></tbody>
+      </table>
+      <div class="chart-box"><canvas id="chartKeywords"></canvas></div>
+      <div class="footer"><span>Competitive Keywords</span><span>4 / 10</span></div>
+    </section>
+
+    <section class="slide"><span class="kicker">P.05 新文/舊文貢獻</span>
+      <h2>新文 vs 舊文：曝光與流量貢獻</h2>
+      <div class="grid2">
+        <div class="box"><h3>新文（2026/04 口徑）</h3><ul><li>曝光：<b id="newImp">-</b></li><li>點擊：<b id="newClk">-</b></li><li>曝光占比：<b id="newImpShare">-</b></li><li>點擊占比：<b id="newClkShare">-</b></li></ul></div>
+        <div class="box"><h3>舊文（2026/04 口徑）</h3><ul><li>曝光：<b id="oldImp">-</b></li><li>點擊：<b id="oldClk">-</b></li><li>曝光占比：<b id="oldImpShare">-</b></li><li>點擊占比：<b id="oldClkShare">-</b></li></ul></div>
+      </div>
+      <div class="grid2">
+        <div class="chart-box"><canvas id="chartContributionImp"></canvas></div>
+        <div class="chart-box"><canvas id="chartContributionClk"></canvas></div>
+      </div>
+      <div class="box" style="margin-top:12px;">
+        <h3>已完成文章成效清單（新文 / 舊文）</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>類型</th>
+              <th>文章連結</th>
+              <th>曝光</th>
+              <th>流量（點擊）</th>
+              <th>上首頁關鍵字個數</th>
+            </tr>
+          </thead>
+          <tbody id="completedArticleRows">
+            <tr><td colspan="5">更新後顯示</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="footer"><span>New vs Existing</span><span>5 / 10</span></div>
+    </section>
+
+    <section class="slide"><span class="kicker">P.06 第一頁成果</span>
+      <h2>總共多少關鍵字進入第一頁</h2>
+      <div class="kpis">
+        <div class="kpi"><div class="label">2025/11 第一頁字數</div><div class="value" id="page1Nov">-</div></div>
+        <div class="kpi"><div class="label">2026/04 第一頁字數</div><div class="value" id="page1Apr">-</div></div>
+        <div class="kpi"><div class="label">淨新增</div><div class="value" id="page1Delta">-</div></div>
+        <div class="kpi"><div class="label">Top3 字數（2026/04）</div><div class="value" id="top3Apr">-</div></div>
+      </div>
+      <div class="chart-box"><canvas id="chartPage1"></canvas></div>
+      <div class="footer"><span>Page 1 Keyword Growth</span><span>6 / 10</span></div>
+    </section>
+
+    <section class="slide"><span class="kicker">P.07 關鍵字行動</span>
+      <h2>後續行動建議：對應網址與行動建議</h2>
+      <p class="meta">此版與 brand 共用快取設定，顯示 brand 最新輸入的關鍵字與期間結果（report 不提供手動輸入）。</p>
+      <div class="meta" id="actionFetchStatus" style="margin:8px 0;">尚未抓取</div>
+      <table>
+        <thead>
+          <tr>
+            <th>關鍵字</th>
+            <th>對應網址（最多 3 個）</th>
+            <th>建議行動（依優先度排序）</th>
+          </tr>
+        </thead>
+        <tbody id="actionPlanRows">
+          <tr><td colspan="3">尚未抓取</td></tr>
+        </tbody>
+      </table>
+      <div class="footer"><span>Keyword Action Plan</span><span>7 / 10</span></div>
+    </section>
+
+    </section>
+
+    <section id="viewRank" class="view hidden">
+      <section class="slide">
+        <span class="kicker">關鍵字排名</span>
+        <h2>miko3C 關鍵字排名（近三個月：2~4月）</h2>
+        <p class="meta">來源：miko3C 關鍵字排名.xlsx（失敗時改用 data.js/json）</p>
+        <div class="grid2">
+          <div class="box">
+            <h3>排序設定</h3>
+            <label>排序欄位
+              <select id="rankSortField">
+                <option value="rank">排名數字</option>
+                <option value="kw">關鍵字字組</option>
+              </select>
+            </label>
+            <label>排名月份
+              <select id="rankSortMonth">
+                <option value="m4">4月</option>
+                <option value="m3">3月</option>
+                <option value="m2">2月</option>
+              </select>
+            </label>
+            <label>排序方向
+              <select id="rankSortDir">
+                <option value="asc">升冪</option>
+                <option value="desc">降冪</option>
+              </select>
+            </label>
+          </div>
+          <div class="box">
+            <h3>口徑說明</h3>
+            <ul>
+              <li>關鍵字分頁：使用 Excel（2/3/4 月）</li>
+              <li>成果報告：預設使用更新資料（2025/11 vs 2026/04）</li>
+              <li>載入 Excel 後，會同步 4 月「上首頁關鍵字數」到成果報告</li>
+            </ul>
+          </div>
+        </div>
+        <div class="kpis">
+          <div class="kpi"><div class="label">關鍵字數</div><div class="value" id="rankCount">-</div></div>
+          <div class="kpi"><div class="label">2月上首頁個數</div><div class="value" id="rankPage1_2">-</div></div>
+          <div class="kpi"><div class="label">3月上首頁個數</div><div class="value" id="rankPage1_3">-</div></div>
+          <div class="kpi"><div class="label">4月上首頁個數</div><div class="value" id="rankPage1_4">-</div></div>
+        </div>
+        <div class="chart-box"><canvas id="chartRankingTrend"></canvas></div>
+        <table>
+          <thead><tr><th>關鍵字</th><th>2月</th><th>3月</th><th>4月</th><th>文章</th></tr></thead>
+          <tbody id="rankRows"><tr><td colspan="5">尚未載入</td></tr></tbody>
+        </table>
+        <div class="footer"><span id="rankPageInfo">共 0 筆</span><span><button id="rankPrevBtn" type="button">上一頁</button> <button id="rankNextBtn" type="button">下一頁</button></span></div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const API_BASE = "http://127.0.0.1:5111";
+    const FALLBACK_SITE_URL = "sc-domain:miko3c.com";
+    const CACHE_KEY = "miko_success_case_cache_v2";
+    const ACTION_CACHE_KEY = "miko_success_case_action_v1";
+    const CACHE_FALLBACK_KEYS = ["miko_success_case_cache_v2", "miko_success_case_cache_v1", "miko_success_case_cache"];
+    const XLSX_FILE = "miko3C%20關鍵字排名.xlsx";
+    const ARCH_PAGES_FILE = "miko%20架構頁.xlsx";
+    const ARCH_PAGES_FALLBACK = [
+      "https://www.miko3c.com/products/phone/",
+      "https://www.miko3c.com/products/phone/iphone/",
+      "https://www.miko3c.com/products/phone/iphone/iPhone17series/",
+      "https://www.miko3c.com/recycle/High-Price-Purchase/",
+      "https://www.miko3c.com/recycle/High-Price-Purchase/apple/",
+      "https://www.miko3c.com/recycle/High-Price-Purchase/apple/iPhone16/",
+      "https://www.miko3c.com/discount/",
+      "https://www.miko3c.com/discount/?provider=Chunghwa",
+      "https://www.miko3c.com/price/",
+      "https://www.miko3c.com/price/phone/iphone/",
+      "https://www.miko3c.com/price/phone/iphone/iPhone17series/",
+      "https://www.miko3c.com/",
+    ];
+    const BRAND_MONTHLY_FILE = "SEO_and_Marketing/成功案例/數據.xlsx";
+    const BRAND_MONTHLY_FILE_CANDIDATES = [
+      "SEO_and_Marketing/成功案例/數據.xlsx",
+      "./SEO_and_Marketing/成功案例/數據.xlsx",
+      "數據.xlsx",
+      "./數據.xlsx",
+      encodeURI("SEO_and_Marketing/成功案例/數據.xlsx"),
+      encodeURI("./SEO_and_Marketing/成功案例/數據.xlsx"),
+      encodeURI("數據.xlsx"),
+      encodeURI("./數據.xlsx")
+    ];
+    const BRAND_MONTHLY_INLINE_ROWS = [
+      { website: "https://www.miko3c.com/", year: 2026, month: 1, traffic: 259819.74910003878 },
+      { website: "https://www.miko3c.com/", year: 2026, month: 2, traffic: 286030.343361523 },
+      { website: "https://www.miko3c.com/", year: 2026, month: 3, traffic: 406951.1247607246 },
+      { website: "https://www.miko3c.com/", year: 2026, month: 4, traffic: 541076.122741703 },
+      { website: "https://www.landtop.com.tw/", year: 2026, month: 1, traffic: 1726892.5706836805 },
+      { website: "https://www.landtop.com.tw/", year: 2026, month: 2, traffic: 1999348.5529978983 },
+      { website: "https://www.landtop.com.tw/", year: 2026, month: 3, traffic: 2059930.3900861405 },
+      { website: "https://www.landtop.com.tw/", year: 2026, month: 4, traffic: 1950596.1133899633 },
+      { website: "https://www.onion-net.com.tw/", year: 2026, month: 1, traffic: 982299.1412768122 },
+      { website: "https://www.onion-net.com.tw/", year: 2026, month: 2, traffic: 931864.0352686308 },
+      { website: "https://www.onion-net.com.tw/", year: 2026, month: 3, traffic: 825653.0075668897 },
+      { website: "https://www.onion-net.com.tw/", year: 2026, month: 4, traffic: 787044.2821265012 }
+    ];
+    const DATA_JS_FILE = "miko3C_關鍵字排名.data.js";
+    const DATA_JSON_FILE = "miko3C_關鍵字排名.json";
+    const charts = {};
+    let currentData = null;
+    let currentRanking = null;
+    let rankPage = 1;
+    const RANK_PAGE_SIZE = 100;
+    let rankSortField = "rank";
+    let rankSortMonth = "m4";
+    let rankSortDir = "asc";
+
+    const fmtNum = (n) => Number(n || 0).toLocaleString("zh-TW", { maximumFractionDigits: 0 });
+    const fmtPct = (n) => `${(Number(n || 0) * 100).toFixed(2)}%`;
+    const pctDelta = (cur, base) => base > 0 ? ((cur - base) / base) : 0;
+
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function escHtml(s) {
+      return String(s || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+    function setCacheInfo(msg) { const el = document.getElementById("cacheInfo"); if (el) el.textContent = `快取：${msg}`; }
+    function getFirstAvailableCache() {
+      for (const k of CACHE_FALLBACK_KEYS) {
+        const raw = localStorage.getItem(k);
+        if (raw) return { key: k, raw };
+      }
+      return null;
+    }
+    function getLinkedActionMeta() {
+      try {
+        const rawAction = localStorage.getItem(ACTION_CACHE_KEY);
+        if (rawAction) {
+          const parsedAction = JSON.parse(rawAction);
+          const m = parsedAction?.actionPlanMeta;
+          if (m && Array.isArray(m.keywords) && m.keywords.length && m.startDate && m.endDate) {
+            return {
+              keywords: m.keywords.map(s => String(s).trim()).filter(Boolean),
+              startDate: String(m.startDate),
+              endDate: String(m.endDate),
+              maxUrls: Number(m.maxUrls || 3)
+            };
+          }
+        }
+      } catch (_) {}
+      const picked = getFirstAvailableCache();
+      if (!picked) return null;
+      try {
+        const parsed = JSON.parse(picked.raw);
+        const m = parsed?.model?.actionPlanMeta;
+        if (!m || !Array.isArray(m.keywords) || !m.keywords.length || !m.startDate || !m.endDate) return null;
+        return {
+          keywords: m.keywords.map(s => String(s).trim()).filter(Boolean),
+          startDate: String(m.startDate),
+          endDate: String(m.endDate),
+          maxUrls: Number(m.maxUrls || 3)
+        };
+      } catch (_) {
+        return null;
+      }
+    }
+
+    function persistCacheSnapshot() {
+      try {
+        const picked = getFirstAvailableCache();
+        let model = currentData || null;
+        if (!model && picked?.raw) {
+          const parsed = JSON.parse(picked.raw);
+          model = parsed?.model || parsed || null;
+        }
+        localStorage.setItem(CACHE_KEY, JSON.stringify({ model, ranking: currentRanking || null }));
+      } catch (_) {}
+    }
+
+    function upsertChart(id, cfg) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (charts[id]) charts[id].destroy();
+      const merged = {
+        ...cfg,
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: false,
+          plugins: {
+            legend: { position: "top" },
+            ...(cfg.options?.plugins || {})
+          },
+          scales: {
+            x: {
+              ticks: {
+                maxRotation: 0,
+                autoSkip: true,
+                callback(value) {
+                  const raw = this.getLabelForValue ? this.getLabelForValue(value) : value;
+                  const s = String(raw ?? "");
+                  return s.length > 14 ? `${s.slice(0, 14)}...` : s;
+                }
+              },
+              ...(cfg.options?.scales?.x || {})
+            },
+            ...(cfg.options?.scales || {})
+          },
+          ...(cfg.options || {})
+        }
+      };
+      charts[id] = new Chart(el, merged);
+    }
+
+    function toNum(v, fallback = 0) {
+      const n = Number(v);
+      return Number.isFinite(n) ? n : fallback;
+    }
+
+    function normalizeBrandName(site) {
+      const s = String(site || "").toLowerCase();
+      if (s.includes("miko3c")) return "miko3c.com";
+      if (s.includes("landtop")) return "landtop.com.tw";
+      if (s.includes("onion-net")) return "onion-net.com.tw";
+      return s.replace(/^https?:\/\//, "").replace(/^www\./, "").replace(/\/$/, "");
+    }
+
+    function renderBrandMonthlyTrafficFromRows(rows) {
+      const monthSet = new Set();
+      const byBrand = new Map();
+      for (const r of rows || []) {
+        const site = r.website || r.site || r.url;
+        const year = toNum(r.year, NaN);
+        const month = toNum(r.month, NaN);
+        const traffic = toNum(r.traffic, NaN);
+        if (!site || !Number.isFinite(year) || !Number.isFinite(month) || !Number.isFinite(traffic)) continue;
+        const brand = normalizeBrandName(site);
+        const mkey = `${Math.round(year)}-${String(Math.round(month)).padStart(2, "0")}`;
+        monthSet.add(mkey);
+        const cur = byBrand.get(brand) || new Map();
+        cur.set(mkey, traffic);
+        byBrand.set(brand, cur);
+      }
+
+      const labels = [...monthSet].sort();
+      const preferred = ["miko3c.com", "landtop.com.tw", "onion-net.com.tw"];
+      const brandNames = preferred.filter(b => byBrand.has(b));
+      if (brandNames.length < 3) {
+        for (const b of byBrand.keys()) {
+          if (!brandNames.includes(b)) brandNames.push(b);
+          if (brandNames.length >= 3) break;
+        }
+      }
+      const colors = ["#2563eb", "#16a34a", "#f59e0b"];
+      const datasets = brandNames.slice(0, 3).map((brand, idx) => ({
+        label: brand,
+        data: labels.map(m => {
+          const n = byBrand.get(brand)?.get(m);
+          return Number.isFinite(n) ? n : null;
+        }),
+        borderColor: colors[idx % colors.length],
+        backgroundColor: colors[idx % colors.length],
+        tension: 0.25,
+        spanGaps: true
+      }));
+      if (!labels.length || !datasets.length) return false;
+
+      upsertChart("chartBrandMonthlyTraffic", {
+        type: "line",
+        data: { labels, datasets },
+        options: {
+          plugins: { legend: { position: "bottom" } },
+          scales: {
+            y: {
+              ticks: {
+                callback(v) { return Number(v).toLocaleString("zh-TW"); }
+              }
+            }
+          }
+        }
+      });
+      return true;
+    }
+
+    async function renderBrandMonthlyTrafficChart() {
+      try {
+        let rows = null;
+        for (const p of BRAND_MONTHLY_FILE_CANDIDATES) {
+          try {
+            const r = await fetch(p);
+            if (!r.ok) continue;
+            const buf = await r.arrayBuffer();
+            const wb = XLSX.read(buf, { type: "array" });
+            const ws = wb.Sheets[wb.SheetNames[0]];
+            rows = XLSX.utils.sheet_to_json(ws, { defval: null });
+            if (Array.isArray(rows) && rows.length) break;
+          } catch (_) {}
+        }
+        if (!renderBrandMonthlyTrafficFromRows(rows)) {
+          if (!renderBrandMonthlyTrafficFromRows(BRAND_MONTHLY_INLINE_ROWS)) {
+            throw new Error("no monthly data");
+          }
+        }
+      } catch (_) {
+        if (!renderBrandMonthlyTrafficFromRows(BRAND_MONTHLY_INLINE_ROWS)) {
+          upsertChart("chartBrandMonthlyTraffic", {
+            type: "line",
+            data: {
+              labels: ["無資料"],
+              datasets: [{ label: "資料未載入", data: [0], borderColor: "#94a3b8", backgroundColor: "#94a3b8" }]
+            }
+          });
+        }
+      }
+    }
+    function switchTab(tab) {
+      const caseView = document.getElementById("viewCase");
+      const rankView = document.getElementById("viewRank");
+      const caseBtn = document.getElementById("tabCase");
+      const rankBtn = document.getElementById("tabRank");
+      const isCase = tab === "case";
+      caseView.classList.toggle("hidden", !isCase);
+      rankView.classList.toggle("hidden", isCase);
+      caseBtn.classList.toggle("active", isCase);
+      rankBtn.classList.toggle("active", !isCase);
+    }
+
+    function hostOf(url) {
+      try { return new URL(url).hostname.replace(/^www\./, "").toLowerCase(); }
+      catch (_) { return ""; }
+    }
+
+    function normalizePageKey(url) {
+      try {
+        const u = new URL(String(url || "").trim());
+        const host = u.hostname.replace(/^www\./, "").toLowerCase();
+        const pathname = (u.pathname || "/").replace(/\/+$/, "") || "/";
+        return `${host}${pathname}`;
+      } catch (_) {
+        const raw = String(url || "").trim();
+        return raw.replace(/[?#].*$/, "").replace(/\/+$/, "").toLowerCase();
+      }
+    }
+
+    function siteMatchesPage(siteUrl, pageUrl) {
+      const ph = hostOf(pageUrl);
+      if (!ph) return false;
+      const s = String(siteUrl || "").trim().toLowerCase();
+      if (s.startsWith("sc-domain:")) {
+        const d = s.replace("sc-domain:", "").replace(/^www\./, "").trim();
+        return !!d && (ph === d || ph.endsWith(`.${d}`));
+      }
+      const sh = hostOf(s);
+      if (!sh) return false;
+      return ph === sh || ph.endsWith(`.${sh}`) || sh.endsWith(`.${ph}`);
+    }
+
+    async function postJson(path, body) {
+      const res = await fetch(`${API_BASE}${path}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+      if (!res.ok) throw new Error(`${path} ${res.status}`);
+      return res.json();
+    }
+
+    async function loadArchitecturePages() {
+      try {
+        const res = await fetch(ARCH_PAGES_FILE);
+        if (!res.ok) throw new Error("架構頁檔案讀取失敗");
+        const buf = await res.arrayBuffer();
+        const wb = XLSX.read(buf, { type: "array" });
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        const arr = XLSX.utils.sheet_to_json(ws, { header: 1 });
+        const urls = arr.slice(1)
+          .map(r => String(r[1] || "").trim())
+          .filter(u => /^https?:\/\//i.test(u));
+        if (urls.length) return [...new Set(urls)];
+      } catch (_) {}
+      return [...ARCH_PAGES_FALLBACK];
+    }
+
+    function sumTotals(reports) {
+      return reports.reduce((acc, r) => {
+        acc.imp += Number(r.after?.totals?.impressions || 0);
+        acc.clk += Number(r.after?.totals?.clicks || 0);
+        acc.posNum += Number(r.after?.totals?.position || 0) * Number(r.after?.totals?.impressions || 0);
+        return acc;
+      }, { imp: 0, clk: 0, posNum: 0 });
+    }
+
+    function collectKeywordStats(reports) {
+      const map = new Map();
+      for (const r of reports || []) {
+        for (const k of (r.top30 || [])) {
+          const q = String(k.query || "").trim();
+          if (!q) continue;
+          const afterPos = Number(k.after_position || 999);
+          const imp = Number(k.after_impressions || 0);
+          const prev = map.get(q) || { bestPos: 999, imp: 0 };
+          prev.bestPos = Math.min(prev.bestPos, afterPos);
+          prev.imp += imp;
+          map.set(q, prev);
+        }
+      }
+      let top10 = 0, top3 = 0;
+      for (const v of map.values()) {
+        if (v.bestPos <= 10) top10 += 1;
+        if (v.bestPos <= 3) top3 += 1;
+      }
+      return { top10, top3, map };
+    }
+
+    function topKeywordsByImpressions(reports, limit = 5) {
+      const map = new Map();
+      for (const r of reports || []) {
+        for (const k of (r.top30 || [])) {
+          const q = String(k.query || "").trim();
+          if (!q) continue;
+          const imp = Number(k.after_impressions || 0);
+          map.set(q, (map.get(q) || 0) + imp);
+        }
+      }
+      return [...map.entries()]
+        .map(([query, imp]) => ({ query, imp }))
+        .sort((a, b) => b.imp - a.imp)
+        .slice(0, limit);
+    }
+
+    function topPagesByImpressionsFromReports(reports, limit = 5) {
+      return (reports || [])
+        .map((r) => ({
+          page: String(r.page || ""),
+          imp: Number(r.after?.totals?.impressions || 0),
+        }))
+        .filter((x) => x.page)
+        .sort((a, b) => b.imp - a.imp)
+        .slice(0, limit);
+    }
+
+    function pageMetricsFromReports(reports, allowSet) {
+      const map = new Map();
+      for (const r of reports || []) {
+        const page = String(r.page || "");
+        const key = normalizePageKey(page);
+        if (!page || !allowSet.has(key)) continue;
+        const imp = Number(r.after?.totals?.impressions || 0);
+        const clk = Number(r.after?.totals?.clicks || 0);
+        let top10KwCount = 0;
+        let top5KwImp = 0;
+        const kwRows = (r.top30 || []).map((k) => ({
+          pos: Number(k.after_position || 999),
+          imp: Number(k.after_impressions || 0),
+        }));
+        for (const k of (r.top30 || [])) {
+          const pos = Number(k.after_position || 999);
+          if (pos <= 10) top10KwCount += 1;
+        }
+        top5KwImp = kwRows
+          .sort((a, b) => b.imp - a.imp)
+          .slice(0, 5)
+          .reduce((s, x) => s + Number(x.imp || 0), 0);
+        map.set(key, { page, imp, clk, top10KwCount, top5KwImp });
+      }
+      return map;
+    }
+
+    function pageMetricsFromPages(pages, allowSet) {
+      const map = new Map();
+      for (const p of pages || []) {
+        const page = String(p.page || "");
+        const key = normalizePageKey(page);
+        if (!page || !allowSet.has(key)) continue;
+        const prev = map.get(key) || { page, imp: 0, clk: 0, top10KwCount: 0, top5KwImp: 0 };
+        prev.imp += Number(p.impressions || 0);
+        prev.clk += Number(p.clicks || 0);
+        map.set(key, prev);
+      }
+      return map;
+    }
+
+    function summarizePagesByWhitelist(pages, allowSet) {
+      const list = (pages || []).filter((p) => allowSet.has(normalizePageKey(String(p.page || ""))));
+      const imp = list.reduce((s, p) => s + Number(p.impressions || 0), 0);
+      const clk = list.reduce((s, p) => s + Number(p.clicks || 0), 0);
+      const topPages = list
+        .map((p) => ({ page: String(p.page || ""), imp: Number(p.impressions || 0) }))
+        .sort((a, b) => b.imp - a.imp)
+        .slice(0, 5);
+      return { imp, clk, topPages };
+    }
+
+    async function firstFulfilled(promises) {
+      const settled = await Promise.allSettled(promises);
+      for (const r of settled) {
+        if (r.status === "fulfilled") return r.value;
+      }
+      throw new Error("no fulfilled promise");
+    }
+
+    function top10CountForSingleReport(report) {
+      const map = new Map();
+      for (const k of (report?.top30 || [])) {
+        const q = String(k.query || "").trim();
+        if (!q) continue;
+        const pos = Number(k.after_position || 999);
+        const prev = map.get(q);
+        if (prev === undefined || pos < prev) map.set(q, pos);
+      }
+      let cnt = 0;
+      for (const pos of map.values()) {
+        if (pos <= 10) cnt += 1;
+      }
+      return cnt;
+    }
+
+    function validateFrontendUpdate() {
+      const issues = [];
+      const mustHaveValueIds = [
+        "kpiAprImp", "kpiAprClk", "novImp", "aprImp",
+        "archJanImp", "archAprImp", "archJanClk", "archAprClk"
+      ];
+      for (const id of mustHaveValueIds) {
+        const v = String(document.getElementById(id)?.textContent || "").trim();
+        if (!v || v === "-") issues.push(`欄位未更新：${id}`);
+      }
+      const mustHaveCharts = [
+        "chartOverallImp", "chartOverallClk", "chartArchImp", "chartArchClk", "chartArchTop10",
+        "chartKeywords", "chartContributionImp", "chartContributionClk"
+      ];
+      for (const cid of mustHaveCharts) {
+        if (!charts[cid]) issues.push(`圖表未更新：${cid}`);
+      }
+      return issues;
+    }
+
+    async function fetchPagesBySiteAndRange(siteUrl, startDate, endDate) {
+      try {
+        const qs = new URLSearchParams({ siteUrl, startDate, endDate });
+        const res = await fetch(`${API_BASE}/api/pages?${qs.toString()}`);
+        if (res.ok) {
+          const data = await res.json();
+          const pages = Array.isArray(data.pages) ? data.pages : [];
+          return pages.map((r) => ({
+            page: String(r.page || ""),
+            impressions: Number(r.impressions || 0),
+            clicks: Number(r.clicks || 0),
+          })).filter((x) => x.page);
+        }
+      } catch (_) {}
+
+      // Backward fallback: older API shape
+      const resp = await postJson("/api/query", {
+        siteUrl,
+        mode: "custom",
+        anchorDate: startDate,
+        days: 1,
+        customStart: startDate,
+        customEnd: endDate,
+        pageMode: "all",
+      });
+      const pages = Array.isArray(resp.pages) ? resp.pages : [];
+      return pages.map((r) => ({
+        page: String(r.page || ""),
+        impressions: Number(r.impressions || 0),
+        clicks: Number(r.clicks || 0),
+      })).filter((x) => x.page);
+    }
+
+    function mergePeriodPages(novReports, aprReports) {
+      const map = new Map();
+      for (const r of novReports || []) {
+        const page = String(r.page || "");
+        if (!page) continue;
+        const cur = map.get(page) || { page, novImp: 0, novClk: 0, aprImp: 0, aprClk: 0 };
+        cur.novImp += Number(r.after?.totals?.impressions || 0);
+        cur.novClk += Number(r.after?.totals?.clicks || 0);
+        map.set(page, cur);
+      }
+      for (const r of aprReports || []) {
+        const page = String(r.page || "");
+        if (!page) continue;
+        const cur = map.get(page) || { page, novImp: 0, novClk: 0, aprImp: 0, aprClk: 0 };
+        cur.aprImp += Number(r.after?.totals?.impressions || 0);
+        cur.aprClk += Number(r.after?.totals?.clicks || 0);
+        map.set(page, cur);
+      }
+      return [...map.values()].map((x) => ({ ...x, deltaImp: x.aprImp - x.novImp, deltaClk: x.aprClk - x.novClk }));
+    }
+
+    function preferNonZeroSummary(primary, fallback) {
+      const pImp = Number(primary?.imp || 0);
+      const pClk = Number(primary?.clk || 0);
+      if (pImp > 0 || pClk > 0) return primary;
+      return fallback || primary || { imp: 0, clk: 0 };
+    }
+
+    function parseRankNum(v) {
+      if (v === null || v === undefined) return null;
+      const s = String(v).trim();
+      if (!s || s === "-") return null;
+      const n = Number(s.replace(/,/g, ""));
+      return Number.isFinite(n) && n > 0 ? n : null;
+    }
+
+    function findHeaderRowAndCols(matrix) {
+      const limit = Math.min(12, matrix.length);
+      for (let r = 0; r < limit; r += 1) {
+        const row = (matrix[r] || []).map(x => String(x || "").trim());
+        const idxUrl = row.findIndex(c => /網址|url/i.test(c));
+        const idxKw = row.findIndex(c => /關鍵字|keyword/i.test(c));
+        const idx2 = row.findIndex(c => /(^|\\D)2月|二月/.test(c));
+        const idx3 = row.findIndex(c => /(^|\\D)3月|三月/.test(c));
+        const idx4 = row.findIndex(c => /(^|\\D)4月|四月/.test(c));
+        if (idxKw >= 0 && (idx2 >= 0 || idx3 >= 0 || idx4 >= 0)) {
+          return { headerRow: r, idxUrl, idxKw, idx2, idx3, idx4 };
+        }
+      }
+      return null;
+    }
+    function getActionCache() {
+      try {
+        const raw = localStorage.getItem(ACTION_CACHE_KEY);
+        return raw ? JSON.parse(raw) : null;
+      } catch (_) {
+        return null;
+      }
+    }
+
+    function parseRankingRows(headers, rows) {
+      const matrix = [headers, ...rows];
+      let schema = findHeaderRowAndCols(matrix);
+      if (!schema) {
+        // Fallback: assume first row is header, common fixed positions.
+        schema = { headerRow: 0, idxUrl: 1, idxKw: 2, idx2: 3, idx3: 4, idx4: 5 };
+      }
+
+      const dataRows = matrix.slice(schema.headerRow + 1);
+      const parsed = dataRows.map(r => ({
+        url: String(r[schema.idxUrl] || "").trim(),
+        kw: String(r[schema.idxKw] || "").trim(),
+        m2: parseRankNum(r[schema.idx2]),
+        m3: parseRankNum(r[schema.idx3]),
+        m4: parseRankNum(r[schema.idx4]),
+      })).filter(x => x.kw || x.url || x.m2 || x.m3 || x.m4)
+        .filter(x => x.kw);
+      const avg = (k) => {
+        const nums = parsed.map(r => r[k]).filter(v => typeof v === "number" && v > 0);
+        return nums.length ? (nums.reduce((a, b) => a + b, 0) / nums.length) : 0;
+      };
+      const page1 = (k) => parsed.filter(r => typeof r[k] === "number" && r[k] > 0 && r[k] <= 10).length;
+      return {
+        headers,
+        rows: parsed,
+        avg2: avg("m2"),
+        avg3: avg("m3"),
+        avg4: avg("m4"),
+        page1_2: page1("m2"),
+        page1_3: page1("m3"),
+        page1_4: page1("m4")
+      };
+    }
+
+    async function loadRankingFallback() {
+      const jsRes = await fetch(DATA_JS_FILE);
+      if (jsRes.ok) {
+        const text = await jsRes.text();
+        const dataText = text.replace(/^window\.MIKO_KEYWORD_DATA\s*=\s*/, "").replace(/;\s*$/, "");
+        const data = JSON.parse(dataText);
+        return parseRankingRows(data.headers || [], data.rows || []);
+      }
+      const jsonRes = await fetch(DATA_JSON_FILE);
+      const data = await jsonRes.json();
+      return parseRankingRows(data.headers || [], data.rows || []);
+    }
+
+    async function loadRankingData() {
+      const status = document.getElementById("status");
+      status.textContent = "載入排名檔中...";
+      try {
+        const r = await fetch(XLSX_FILE);
+        if (!r.ok) throw new Error("xlsx not found");
+        const buf = await r.arrayBuffer();
+        const wb = XLSX.read(buf, { type: "array" });
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        const arr = XLSX.utils.sheet_to_json(ws, { header: 1 });
+        const headers = arr[0] || [];
+        const rows = arr.slice(1);
+        currentRanking = parseRankingRows(headers, rows);
+        rankPage = 1;
+        status.textContent = `已載入 XLSX：${currentRanking.rows.length} 筆`;
+      } catch (_) {
+        currentRanking = await loadRankingFallback();
+        rankPage = 1;
+        status.textContent = `XLSX 自動載入失敗，已改用 fallback：${currentRanking.rows.length} 筆（可用「選擇檔案」上傳 Excel）`;
+      }
+      renderRankingPage(currentRanking);
+      if (currentData) renderCharts(currentData, currentRanking);
+      persistCacheSnapshot();
+    }
+
+    async function loadRankingDataFromFile(file) {
+      const status = document.getElementById("status");
+      if (!file) return;
+      status.textContent = `讀取檔案中：${file.name}`;
+      try {
+        const buf = await file.arrayBuffer();
+        const wb = XLSX.read(buf, { type: "array" });
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        const arr = XLSX.utils.sheet_to_json(ws, { header: 1 });
+        const headers = arr[0] || [];
+        const rows = arr.slice(1);
+        currentRanking = parseRankingRows(headers, rows);
+        rankPage = 1;
+        renderRankingPage(currentRanking);
+        if (currentData) renderCharts(currentData, currentRanking);
+        persistCacheSnapshot();
+        status.textContent = currentRanking.rows.length
+          ? `已載入本機 Excel：${currentRanking.rows.length} 筆`
+          : "Excel 已讀取，但未識別到有效關鍵字列（請確認欄位含 關鍵字/2月/3月/4月）";
+      } catch (e) {
+        status.textContent = `Excel 解析失敗：${e.message}`;
+      }
+    }
+    function renderRankingPage(ranking) {
+      if (!ranking) return;
+      setText("rankCount", fmtNum(ranking.rows.length));
+      setText("rankPage1_2", fmtNum(ranking.page1_2 || 0));
+      setText("rankPage1_3", fmtNum(ranking.page1_3 || 0));
+      setText("rankPage1_4", fmtNum(ranking.page1_4 || 0));
+      const all = [...ranking.rows].sort((a, b) => {
+        if (rankSortField === "kw") {
+          const av = String(a.kw || "");
+          const bv = String(b.kw || "");
+          const cmp = av.localeCompare(bv, "zh-Hant");
+          return rankSortDir === "asc" ? cmp : -cmp;
+        }
+        const av = Number(a[rankSortMonth] || 9999);
+        const bv = Number(b[rankSortMonth] || 9999);
+        const cmp = av - bv;
+        return rankSortDir === "asc" ? cmp : -cmp;
+      });
+      const totalPages = Math.max(1, Math.ceil(all.length / RANK_PAGE_SIZE));
+      if (rankPage > totalPages) rankPage = totalPages;
+      if (rankPage < 1) rankPage = 1;
+      const start = (rankPage - 1) * RANK_PAGE_SIZE;
+      const pageRows = all.slice(start, start + RANK_PAGE_SIZE);
+      const tbody = document.getElementById("rankRows");
+      tbody.innerHTML = pageRows.length
+        ? pageRows.map(x => `<tr><td>${x.kw}</td><td>${x.m2 ?? "-"}</td><td>${x.m3 ?? "-"}</td><td>${x.m4 ?? "-"}</td><td>${x.url}</td></tr>`).join("")
+        : `<tr><td colspan="5">無排名資料</td></tr>`;
+      setText("rankPageInfo", `共 ${fmtNum(all.length)} 筆，第 ${rankPage}/${totalPages} 頁`);
+      document.getElementById("rankPrevBtn").disabled = rankPage <= 1;
+      document.getElementById("rankNextBtn").disabled = rankPage >= totalPages;
+      upsertChart("chartRankingTrend", {
+        type: "bar",
+        data: {
+          labels: ["2月", "3月", "4月"],
+          datasets: [{ label: "上首頁關鍵字個數", data: [ranking.page1_2 || 0, ranking.page1_3 || 0, ranking.page1_4 || 0], backgroundColor: "#2563eb" }]
+        }
+      });
+      // Sync April first-page count to report KPI for consistent executive reading.
+      if (currentData && typeof ranking.page1_4 === "number") {
+        setText("kpiPage1Apr", fmtNum(ranking.page1_4));
+      }
+    }
+
+    function getSortedRankingRows(ranking) {
+      if (!ranking || !Array.isArray(ranking.rows)) return [];
+      return [...ranking.rows].sort((a, b) => {
+        if (rankSortField === "kw") {
+          const av = String(a.kw || "");
+          const bv = String(b.kw || "");
+          const cmp = av.localeCompare(bv, "zh-Hant");
+          return rankSortDir === "asc" ? cmp : -cmp;
+        }
+        const av = Number(a[rankSortMonth] || 9999);
+        const bv = Number(b[rankSortMonth] || 9999);
+        const cmp = av - bv;
+        return rankSortDir === "asc" ? cmp : -cmp;
+      });
+    }
+
+    function renderCharts(model, ranking) {
+      const p01Nov = preferNonZeroSummary(model.fullNovSum, model.novSum) || { imp: 0, clk: 0 };
+      const p01Apr = preferNonZeroSummary(model.fullAprSum, model.aprSum) || { imp: 0, clk: 0 };
+      upsertChart("chartOverallImp", {
+        type: "line",
+        data: {
+          labels: ["2025/11", "2026/04"],
+          datasets: [{ label: "曝光", data: [p01Nov.imp, p01Apr.imp], borderColor: "#2563eb", backgroundColor: "#2563eb33" }]
+        }
+      });
+      upsertChart("chartOverallClk", {
+        type: "line",
+        data: {
+          labels: ["2025/11", "2026/04"],
+          datasets: [{ label: "點擊", data: [p01Nov.clk, p01Apr.clk], borderColor: "#16a34a", backgroundColor: "#16a34a33" }]
+        }
+      });
+      const keywordRows = (model.rows || []).slice(0, 20);
+      upsertChart("chartKeywords", {
+        type: "bar",
+        data: { labels: keywordRows.map(x => x.query), datasets: [{ label: "曝光", data: keywordRows.map(x => x.imp), backgroundColor: "#0ea5e9" }] },
+        options: {
+          indexAxis: "y",
+          scales: {
+            y: {
+              ticks: {
+                callback(value) {
+                  const raw = this.getLabelForValue ? this.getLabelForValue(value) : value;
+                  const s = String(raw ?? "");
+                  return s.length > 12 ? `${s.slice(0, 12)}...` : s;
+                }
+              }
+            }
+          }
+        }
+      });
+      upsertChart("chartPage1", {
+        type: "bar",
+        data: { labels: ["第一頁字數", "Top3 字數"], datasets: [{ label: "2025/11", data: [model.novKw.top10, 0], backgroundColor: "#c7d2fe" }, { label: "2026/04", data: [model.aprKw.top10, model.aprKw.top3], backgroundColor: "#4f46e5" }] }
+      });
+      upsertChart("chartContributionImp", {
+        type: "doughnut",
+        data: { labels: ["新文曝光", "舊文曝光"], datasets: [{ data: [model.newImp, model.oldImp], backgroundColor: ["#22c55e", "#64748b"] }] }
+      });
+      upsertChart("chartContributionClk", {
+        type: "doughnut",
+        data: { labels: ["新文流量", "舊文流量"], datasets: [{ data: [model.newClk, model.oldClk], backgroundColor: ["#0ea5e9", "#94a3b8"] }] }
+      });
+    }
+
+    function classifyPageType(url) {
+      const s = String(url || "").toLowerCase();
+      if (!s) return "other";
+      if (s.includes("/news-detail/")) return "article";
+      if (s.includes("/products/") || s.includes("/products-detail/") || s.includes("/price/") || s.includes("/popular/")) return "product";
+      return "other";
+    }
+
+    function planPriority(rows) {
+      const totalImp = rows.reduce((s, r) => s + Number(r.impressions || 0), 0);
+      const productImp = rows
+        .filter(r => classifyPageType(r.url) === "product")
+        .reduce((s, r) => s + Number(r.impressions || 0), 0);
+      const articleImp = rows
+        .filter(r => classifyPageType(r.url) === "article")
+        .reduce((s, r) => s + Number(r.impressions || 0), 0);
+      const hasData = rows.length > 0;
+      const plans = [];
+
+      if (!hasData) {
+        plans.push(
+          { type: "新文撰寫", note: "無商品頁/文章頁資料，先新增可索引內容建立初始曝光。" },
+          { type: "商品頁優化", note: "新文有初始曝光後，再補商品承接頁與 CTA。" },
+          { type: "舊文優化", note: "待有舊內容後再做舊文優化。" }
+        );
+        return plans;
+      }
+
+      const firstIsProduct = productImp >= articleImp;
+      if (firstIsProduct) {
+        plans.push({
+          type: "商品頁優化",
+          note: `商品頁曝光 ${fmtNum(productImp)} 高於文章頁 ${fmtNum(articleImp)}，先優化商品承接與轉換元件。`
+        });
+        plans.push({
+          type: "舊文優化",
+          note: `再補強文章頁語意覆蓋（文章頁曝光 ${fmtNum(articleImp)}）。`
+        });
+      } else {
+        plans.push({
+          type: "舊文優化",
+          note: `文章頁曝光 ${fmtNum(articleImp)} 高於商品頁 ${fmtNum(productImp)}，先優化既有文章 CTR 與內鏈。`
+        });
+        plans.push({
+          type: "商品頁優化",
+          note: `再補強商品承接頁（商品頁曝光 ${fmtNum(productImp)}）。`
+        });
+      }
+      plans.push({
+        type: "新文撰寫",
+        note: `最後再補新文擴張長尾，並導流至高曝光頁（總曝光 ${fmtNum(totalImp)}）。`
+      });
+      return plans;
+    }
+
+    function renderActionPlanRows(results) {
+      const tbody = document.getElementById("actionPlanRows");
+      const kws = Object.keys(results || {});
+      if (!kws.length) {
+        tbody.innerHTML = `<tr><td colspan="3">查無資料</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = kws.map((kw) => {
+        const rawRows = results[kw];
+        const rows = Array.isArray(rawRows)
+          ? rawRows
+          : (Array.isArray(rawRows?.urls) ? rawRows.urls : []);
+        const urlCell = rows.length
+          ? rows.map(r => `<a href="${r.url}" target="_blank" rel="noreferrer">${r.url}</a>（曝光 ${fmtNum(r.impressions)}｜流量 ${fmtNum(r.clicks)}）`).join("<br/>")
+          : "本期無對應網址";
+        const plans = planPriority(rows);
+        const planCell = plans.map((p, i) => `${i + 1}. ${p.type}：${p.note}`).join("<br/>");
+        return `<tr><td>${kw}</td><td>${urlCell}</td><td class="editable-action" contenteditable="true" spellcheck="false">${planCell}</td></tr>`;
+      }).join("");
+    }
+
+    async function fetchKeywordActionPlanLinked() {
+      const statusEl = document.getElementById("actionFetchStatus");
+      const linked = getLinkedActionMeta();
+      if (!linked) throw new Error("找不到 brand 關鍵字設定，請先在 brand 執行一次 P.07");
+      const { keywords, startDate, endDate, maxUrls } = linked;
+      statusEl.textContent = "抓取中...";
+      const sitesRes = await fetch(`${API_BASE}/api/sites`);
+      const sitesData = await sitesRes.json();
+      const siteUrls = Array.isArray(sitesData.sites) && sitesData.sites.includes(FALLBACK_SITE_URL)
+        ? [FALLBACK_SITE_URL]
+        : (Array.isArray(sitesData.sites) ? sitesData.sites.slice(0, 1) : []);
+      if (!siteUrls.length) throw new Error("找不到可用 siteUrl");
+
+      const res = await fetch(`${API_BASE}/api/keyword-urls`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ siteUrls, keywords, startDate, endDate, maxUrls })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+      renderActionPlanRows(data.results || {});
+      statusEl.textContent = `完成：${data.generated_at || ""}（${startDate} ~ ${endDate}）`;
+      return { generatedAt: data.generated_at || "", startDate, endDate, results: data.results || {} };
+    }
+
+    function paintFromData(model) {
+      const linkedAction = getActionCache();
+      if (!model.actionPlan && linkedAction?.actionPlan) model.actionPlan = linkedAction.actionPlan;
+      if (!model.actionPlanMeta && linkedAction?.actionPlanMeta) model.actionPlanMeta = linkedAction.actionPlanMeta;
+      const p01Nov = model.fullNovSum || model.novSum || { imp: 0, clk: 0 };
+      const p01Apr = model.fullAprSum || model.aprSum || { imp: 0, clk: 0 };
+
+      setText("kpiAprImp", fmtNum(p01Apr.imp));
+      setText("kpiAprClk", fmtNum(p01Apr.clk));
+      setText("kpiImpGrowth", `較 2025/11 成長 ${(pctDelta(p01Apr.imp, p01Nov.imp) * 100).toFixed(1)}%`);
+      setText("kpiClkGrowth", `較 2025/11 成長 ${(pctDelta(p01Apr.clk, p01Nov.clk) * 100).toFixed(1)}%`);
+      setText("kpiPage1Apr", fmtNum(model.aprKw.top10));
+      setText("kpiPage1Growth", `半年淨增加 ${fmtNum(model.aprKw.top10 - model.novKw.top10)} 字`);
+
+      setText("novImp", fmtNum(p01Nov.imp)); setText("novClk", fmtNum(p01Nov.clk)); setText("novCtr", fmtPct(model.novCtr)); setText("novPos", model.novPos.toFixed(2));
+      setText("aprImp", fmtNum(p01Apr.imp)); setText("aprClk", fmtNum(p01Apr.clk)); setText("aprCtr", fmtPct(model.aprCtr)); setText("aprPos", model.aprPos.toFixed(2));
+
+      setText("page1Nov", fmtNum(model.novKw.top10)); setText("page1Apr", fmtNum(model.aprKw.top10)); setText("page1Delta", fmtNum(model.aprKw.top10 - model.novKw.top10)); setText("top3Apr", fmtNum(model.aprKw.top3));
+
+      setText("newImp", fmtNum(model.newImp)); setText("newClk", fmtNum(model.newClk));
+      setText("oldImp", fmtNum(model.oldImp)); setText("oldClk", fmtNum(model.oldClk));
+      setText("newImpShare", model.totalImp ? `${((model.newImp / model.totalImp) * 100).toFixed(1)}%` : "0%");
+      setText("oldImpShare", model.totalImp ? `${((model.oldImp / model.totalImp) * 100).toFixed(1)}%` : "0%");
+      setText("newClkShare", model.totalClk ? `${((model.newClk / model.totalClk) * 100).toFixed(1)}%` : "0%");
+      setText("oldClkShare", model.totalClk ? `${((model.oldClk / model.totalClk) * 100).toFixed(1)}%` : "0%");
+
+      const archUl = document.getElementById("p1ProblemArchPages");
+      const archRows = Array.isArray(model.archComparison?.archPageCompare) ? model.archComparison.archPageCompare : [];
+      if (archUl) {
+        const archTop = archRows.slice(0, 7);
+        archUl.innerHTML = archTop.length
+          ? archTop.map((r) => `<li><a href="${escHtml(r.page)}" target="_blank" rel="noreferrer">${escHtml(r.page)}</a></li>`).join("")
+          : "<li>本期無可用架構頁資料</li>";
+      }
+
+      const oldPostTbody = document.getElementById("p1ProblemOldPostsRows");
+      const oldRows = Array.isArray(model.oldArticleCompareRows) ? model.oldArticleCompareRows.slice(0, 7) : [];
+      if (oldPostTbody) {
+        oldPostTbody.innerHTML = oldRows.length
+          ? oldRows.map((x) => `<tr><td><a href="${escHtml(x.page)}" target="_blank" rel="noreferrer">${escHtml(x.page)}</a></td><td>${fmtNum(x.novImp)}</td><td>${fmtNum(x.aprImp)}</td><td>${fmtNum(x.novClk)}</td><td>${fmtNum(x.aprClk)}</td><td>${fmtNum(x.page1)}</td></tr>`).join("")
+          : `<tr><td colspan="6">本期無舊文成效資料</td></tr>`;
+      }
+
+      const kwTbody = document.getElementById("p1ProblemKeywordOpsRows");
+      if (kwTbody) {
+        const allRows = Array.isArray(model.siteTopRows) ? model.siteTopRows : [];
+        const telecomHints = ["續約", "資費", "電信", "方案", "吃到飽", "台灣大哥大", "中華", "遠傳"];
+        const oppRows = allRows
+          .filter((x) => {
+            const q = String(x.query || "").toLowerCase();
+            return q.includes("chatgpt") || q.includes("gemini") || telecomHints.some((k) => q.includes(k.toLowerCase()));
+          })
+          .slice(0, 8);
+        const kwDate = "2026/04";
+        kwTbody.innerHTML = oppRows.length
+          ? oppRows.map((x) => `<tr><td>${kwDate}</td><td>${escHtml(x.query)}</td><td>${Number(x.pos || 0).toFixed(2)}</td><td>${fmtNum(x.imp)}</td></tr>`).join("")
+          : "<tr><td colspan=\"4\">本期無電信/AI機會關鍵字資料</td></tr>";
+      }
+
+      const arch = model.archComparison || null;
+      const archJan = arch?.janSum || { imp: 0, clk: 0 };
+      const archApr = arch?.aprSum || { imp: 0, clk: 0 };
+      const archJanTop10 = arch?.janKw?.top10 || 0;
+      const archAprTop10 = arch?.aprKw?.top10 || 0;
+      setText("archJanImp", fmtNum(archJan.imp));
+      setText("archAprImp", fmtNum(archApr.imp));
+      setText("archJanClk", fmtNum(archJan.clk));
+      setText("archAprClk", fmtNum(archApr.clk));
+      setText("archJanTop10", fmtNum(archJanTop10));
+      setText("archAprTop10", fmtNum(archAprTop10));
+      setText("archImpGrowth", `${(pctDelta(archApr.imp, archJan.imp) * 100).toFixed(1)}%`);
+      setText("archClkGrowth", `${(pctDelta(archApr.clk, archJan.clk) * 100).toFixed(1)}%`);
+
+      const archAllTbody = document.getElementById("archAllCompareRows");
+      const archPageCompare = Array.isArray(arch?.archPageCompare) ? arch.archPageCompare : [];
+      if (archAllTbody) {
+        if (archPageCompare.length) {
+          archAllTbody.innerHTML = archPageCompare.map((r) => {
+            const safeUrl = String(r.page || "").replace(/"/g, "&quot;");
+            return `<tr><td><a href="${safeUrl}" target="_blank" rel="noreferrer">${r.page}</a></td><td>${fmtNum(r.janImp)}</td><td>${fmtNum(r.aprImp)}</td><td>${fmtNum(r.janClk)}</td><td>${fmtNum(r.aprClk)}</td><td>${fmtNum(r.janTop10Cnt)}</td><td>${fmtNum(r.aprTop10Cnt)}</td><td>${fmtNum(r.janTop5KwImp)}</td><td>${fmtNum(r.aprTop5KwImp)}</td></tr>`;
+          }).join("");
+        } else {
+          archAllTbody.innerHTML = `<tr><td colspan="9">本期無可用架構頁完整比較資料</td></tr>`;
+        }
+      }
+
+      upsertChart("chartArchImp", {
+        type: "bar",
+        data: {
+          labels: ["2026/01", "2026/04"],
+          datasets: [
+            { label: "曝光", data: [archJan.imp || 0, archApr.imp || 0], backgroundColor: "#2563eb" }
+          ]
+        }
+      });
+      upsertChart("chartArchClk", {
+        type: "bar",
+        data: {
+          labels: ["2026/01", "2026/04"],
+          datasets: [
+            { label: "流量（點擊）", data: [archJan.clk || 0, archApr.clk || 0], backgroundColor: "#16a34a" }
+          ]
+        }
+      });
+      upsertChart("chartArchTop10", {
+        type: "bar",
+        data: {
+          labels: ["2026/01", "2026/04"],
+          datasets: [
+            { label: "上首頁關鍵字個數", data: [archJanTop10, archAprTop10], backgroundColor: "#f59e0b" }
+          ]
+        }
+      });
+
+      const completedTbody = document.getElementById("completedArticleRows");
+      const list = Array.isArray(model.articleRows) ? model.articleRows : [];
+      if (list.length) {
+        completedTbody.innerHTML = list.map(x => {
+          const safeUrl = x.page.replace(/"/g, "&quot;");
+          return `<tr><td>${x.type}</td><td><a href="${safeUrl}" target="_blank" rel="noreferrer">${x.page}</a></td><td>${fmtNum(x.imp)}</td><td>${fmtNum(x.clk)}</td><td>${fmtNum(x.page1)}</td></tr>`;
+        }).join("");
+      } else {
+        completedTbody.innerHTML = `<tr><td colspan="5">本期無可用文章資料</td></tr>`;
+      }
+
+      const bigKeywordTbody = document.getElementById("bigKeywordRows");
+      const bigRows = Array.isArray(model.rows) ? model.rows : [];
+      if (bigRows.length) {
+        bigKeywordTbody.innerHTML = bigRows.map((x) => {
+          const pos = Number(x.pos || 999);
+          const posText = Number.isFinite(pos) && pos < 999 ? pos.toFixed(2) : "-";
+          return `<tr><td>${x.query || "-"}</td><td>${posText}</td><td>${fmtNum(x.imp)}</td></tr>`;
+        }).join("");
+      } else {
+        bigKeywordTbody.innerHTML = `<tr><td colspan="3">本期無競爭關鍵字資料</td></tr>`;
+      }
+
+      const siteTopTbody = document.getElementById("siteTopRows");
+      const siteTopRows = Array.isArray(model.siteTopRows) ? model.siteTopRows : [];
+      if (siteTopRows.length) {
+        siteTopTbody.innerHTML = siteTopRows.map((x) => {
+          const pos = Number(x.pos || 999);
+          const posText = Number.isFinite(pos) && pos < 999 ? pos.toFixed(2) : "-";
+          return `<tr><td>${x.query || "-"}</td><td>${posText}</td><td>${fmtNum(x.imp)}</td></tr>`;
+        }).join("");
+      } else {
+        siteTopTbody.innerHTML = `<tr><td colspan="3">本期無全站 Top20 資料</td></tr>`;
+      }
+      renderActionPlanRows(model.actionPlan?.results || {});
+      const actionStatus = document.getElementById("actionFetchStatus");
+      if (actionStatus) {
+        if (model.actionPlan?.generatedAt) {
+          const src = linkedAction?.actionPlan ? "（來源：brand 聯動快取）" : "";
+          actionStatus.textContent = `完成：${model.actionPlan.generatedAt}（${model.actionPlan.startDate} ~ ${model.actionPlan.endDate}）${src}`;
+        } else {
+          actionStatus.textContent = "尚未抓取";
+        }
+      }
+      renderCharts(model, currentRanking);
+    }
+
+    async function runUpdate() {
+      const status = document.getElementById("status");
+      try {
+        status.textContent = "更新中：載入預設分組...";
+        const impRes = await fetch(`${API_BASE}/api/import-listing-default`);
+        const impData = await impRes.json();
+        const groups = impData.groups || [];
+        const fullGroup = groups.find(g => g.name === "Miko3C_全文");
+        const newGroup = groups.find(g => g.name === "Miko3C_新文");
+        const oldGroup = groups.find(g => g.name === "Miko3C_舊文");
+        if (!fullGroup) throw new Error("找不到 Miko3C_全文 分組");
+
+        const sitesRes = await fetch(`${API_BASE}/api/sites`);
+        const sitesData = await sitesRes.json();
+        const allSites = Array.isArray(sitesData.sites) ? sitesData.sites : [];
+        let selectedSites = [];
+        if (allSites.includes(FALLBACK_SITE_URL)) {
+          selectedSites = [FALLBACK_SITE_URL];
+        } else {
+          const mikoSite = allSites.find((s) => String(s).toLowerCase().includes("miko3c"));
+          if (mikoSite) selectedSites = [mikoSite];
+        }
+        if (!selectedSites.length) {
+          selectedSites = allSites.filter(s => fullGroup.urls.some(p => siteMatchesPage(s, p)));
+        }
+        if (!selectedSites.length && allSites.length) selectedSites = [allSites[0]];
+        if (!selectedSites.length) throw new Error("找不到可用 siteUrl（請確認 5111 服務可用且含 miko3c 網站）");
+
+        const commonPayload = {
+          siteUrls: selectedSites,
+          mode: "custom",
+          pageMode: "batch",
+          pages: fullGroup.urls,
+          groups: [newGroup, oldGroup, fullGroup].filter(Boolean),
+          anchorDate: "2025-11-01",
+          days: 1,
+          successBaselineImpressions: 1000
+        };
+
+        status.textContent = "更新中：抓 2025/11 資料...";
+        const nov = await postJson("/api/report", { ...commonPayload, customStart: "2025-11-01", customEnd: "2025-11-30" });
+
+        status.textContent = "更新中：抓 2026/04 資料...";
+        const apr = await postJson("/api/report", { ...commonPayload, customStart: "2026-04-01", customEnd: "2026-04-30" });
+
+        status.textContent = "更新中：抓 2026/04 全站關鍵字...";
+        const aprSitewideReports = (await Promise.all(
+          selectedSites.map((s) => postJson("/api/report", {
+            siteUrls: [s],
+            mode: "custom",
+            pageMode: "sitewide",
+            anchorDate: "2025-11-01",
+            days: 1,
+            customStart: "2026-04-01",
+            customEnd: "2026-04-30",
+            successBaselineImpressions: 1000
+          }).catch(() => null))
+        ))
+          .filter((x) => x && Array.isArray(x.reports))
+          .flatMap((x) => x.reports || []);
+
+        status.textContent = "更新中：抓全站頁面資料...";
+        const novPageBatches = await Promise.all(
+          selectedSites.map(s => fetchPagesBySiteAndRange(s, "2025-11-01", "2025-11-30").catch(() => []))
+        );
+        const aprPageBatches = await Promise.all(
+          selectedSites.map(s => fetchPagesBySiteAndRange(s, "2026-04-01", "2026-04-30").catch(() => []))
+        );
+        const novPagesAll = novPageBatches.flat();
+        const aprPagesAll = aprPageBatches.flat();
+        const mergedSitewidePages = mergePeriodPages(
+          novPagesAll.map(x => ({ page: x.page, after: { totals: { impressions: x.impressions, clicks: x.clicks } } })),
+          aprPagesAll.map(x => ({ page: x.page, after: { totals: { impressions: x.impressions, clicks: x.clicks } } }))
+        );
+        const fullNovSum = novPagesAll.reduce((acc, r) => {
+          acc.imp += Number(r.impressions || 0);
+          acc.clk += Number(r.clicks || 0);
+          return acc;
+        }, { imp: 0, clk: 0 });
+        const fullAprSum = aprPagesAll.reduce((acc, r) => {
+          acc.imp += Number(r.impressions || 0);
+          acc.clk += Number(r.clicks || 0);
+          return acc;
+        }, { imp: 0, clk: 0 });
+
+        const novSum = sumTotals(nov.reports || []);
+        const aprSum = sumTotals(apr.reports || []);
+        const novCtr = novSum.imp ? novSum.clk / novSum.imp : 0;
+        const aprCtr = aprSum.imp ? aprSum.clk / aprSum.imp : 0;
+        const novPos = novSum.imp ? novSum.posNum / novSum.imp : 0;
+        const aprPos = aprSum.imp ? aprSum.posNum / aprSum.imp : 0;
+
+        const novKw = collectKeywordStats(nov.reports || []);
+        const aprKw = collectKeywordStats(apr.reports || []);
+
+        const aprGroups = apr.groups || [];
+        const gNew = aprGroups.find(g => g.name === "Miko3C_新文") || {};
+        const gOld = aprGroups.find(g => g.name === "Miko3C_舊文") || {};
+
+        const newImp = Number(gNew.after_impressions || 0);
+        const oldImp = Number(gOld.after_impressions || 0);
+        const newClk = Number(gNew.after_clicks || 0);
+        const oldClk = Number(gOld.after_clicks || 0);
+        const totalImp = newImp + oldImp;
+        const totalClk = newClk + oldClk;
+
+        const siteKeywordSource = aprSitewideReports.length ? aprSitewideReports : (apr.reports || []);
+        const siteKeywordMap = new Map();
+        for (const report of siteKeywordSource) {
+          for (const k of (report.top30 || [])) {
+            const query = String(k.query || "").trim();
+            const pos = Number(k.after_position || 999);
+            const imp = Number(k.after_impressions || 0);
+            if (!query || !Number.isFinite(imp)) continue;
+            const existed = siteKeywordMap.get(query) || { query, imp: 0, posNum: 0 };
+            existed.imp += imp;
+            existed.posNum += (Number.isFinite(pos) ? pos * imp : 0);
+            siteKeywordMap.set(query, existed);
+          }
+        }
+        const siteTopRows = [...siteKeywordMap.values()]
+          .filter((x) => x.imp > 0)
+          .map((x) => ({ query: x.query, imp: x.imp, pos: x.posNum / x.imp }))
+          .sort((a, b) => b.imp - a.imp)
+          .slice(0, 20);
+
+        const keywordMap = new Map();
+        for (const report of (apr.reports || [])) {
+          for (const k of (report.top30 || [])) {
+            const query = String(k.query || "").trim();
+            const pos = Number(k.after_position || 999);
+            const imp = Number(k.after_impressions || 0);
+            if (!query || !Number.isFinite(pos) || pos > 10) continue;
+            const existed = keywordMap.get(query);
+            if (!existed || imp > existed.imp) keywordMap.set(query, { query, pos, imp });
+          }
+        }
+        const rows = [...keywordMap.values()].sort((a, b) => b.imp - a.imp);
+
+        const newSet = new Set((newGroup?.urls || []).map(x => String(x)));
+        const oldSet = new Set((oldGroup?.urls || []).map(x => String(x)));
+        const articleRows = (apr.reports || []).map(r => {
+          const page = String(r.page || "");
+          const imp = Number(r.after?.totals?.impressions || 0);
+          const clk = Number(r.after?.totals?.clicks || 0);
+          const page1 = top10CountForSingleReport(r);
+          let type = "其他";
+          if (newSet.has(page)) type = "新文";
+          else if (oldSet.has(page)) type = "舊文";
+          return { type, page, imp, clk, page1 };
+        }).filter(x => x.page).sort((a, b) => b.imp - a.imp);
+
+        const novByPage = new Map((nov.reports || []).map((r) => [String(r.page || ""), r]));
+        const aprByPage = new Map((apr.reports || []).map((r) => [String(r.page || ""), r]));
+        const oldArticleCompareRows = [...oldSet]
+          .map((page) => {
+            const n = novByPage.get(page);
+            const a = aprByPage.get(page);
+            const novImpPage = Number(n?.after?.totals?.impressions || 0);
+            const aprImpPage = Number(a?.after?.totals?.impressions || 0);
+            const novClkPage = Number(n?.after?.totals?.clicks || 0);
+            const aprClkPage = Number(a?.after?.totals?.clicks || 0);
+            const page1 = a ? top10CountForSingleReport(a) : 0;
+            return { page, novImp: novImpPage, aprImp: aprImpPage, novClk: novClkPage, aprClk: aprClkPage, page1, deltaClk: aprClkPage - novClkPage };
+          })
+          .filter((x) => x.page)
+          .sort((a, b) => a.deltaClk - b.deltaClk);
+
+        status.textContent = "更新中：抓架構頁 1月/4月 對比...";
+        let archComparison = null;
+        try {
+          const archPages = await loadArchitecturePages();
+          if (archPages.length) {
+            const allowSet = new Set(archPages.map((u) => normalizePageKey(String(u))));
+            const archPayload = {
+              ...commonPayload,
+              pages: archPages,
+              groups: [],
+            };
+            const [archJanResult, archAprResult, janPagesResult, aprPagesResult] = await Promise.allSettled([
+              postJson("/api/report", { ...archPayload, customStart: "2026-01-01", customEnd: "2026-01-31" }),
+              postJson("/api/report", { ...archPayload, customStart: "2026-04-01", customEnd: "2026-04-30" }),
+              firstFulfilled(selectedSites.map((s) => fetchPagesBySiteAndRange(s, "2026-01-01", "2026-01-31"))),
+              firstFulfilled(selectedSites.map((s) => fetchPagesBySiteAndRange(s, "2026-04-01", "2026-04-30"))),
+            ]);
+
+            const janPages = janPagesResult.status === "fulfilled" ? janPagesResult.value : [];
+            const aprPages = aprPagesResult.status === "fulfilled" ? aprPagesResult.value : [];
+            const janPagesSummary = summarizePagesByWhitelist(janPages, allowSet);
+            const aprPagesSummary = summarizePagesByWhitelist(aprPages, allowSet);
+
+            const janReports = archJanResult.status === "fulfilled" ? (archJanResult.value.reports || []) : [];
+            const aprReports = archAprResult.status === "fulfilled" ? (archAprResult.value.reports || []) : [];
+
+            const janSumFromReport = sumTotals(janReports);
+            const aprSumFromReport = sumTotals(aprReports);
+            const janHasReportSum = Number(janSumFromReport.imp || 0) > 0 || Number(janSumFromReport.clk || 0) > 0;
+            const aprHasReportSum = Number(aprSumFromReport.imp || 0) > 0 || Number(aprSumFromReport.clk || 0) > 0;
+
+            const janSum = janHasReportSum
+              ? janSumFromReport
+              : { imp: Number(janPagesSummary.imp || 0), clk: Number(janPagesSummary.clk || 0), posNum: 0 };
+            const aprSumArch = aprHasReportSum
+              ? aprSumFromReport
+              : { imp: Number(aprPagesSummary.imp || 0), clk: Number(aprPagesSummary.clk || 0), posNum: 0 };
+
+            const janKw = collectKeywordStats(janReports);
+            const aprKwArch = collectKeywordStats(aprReports);
+            const janTopPages = janHasReportSum
+              ? topPagesByImpressionsFromReports(janReports, 5)
+              : janPagesSummary.topPages;
+            const aprTopPages = aprHasReportSum
+              ? topPagesByImpressionsFromReports(aprReports, 5)
+              : aprPagesSummary.topPages;
+            const janMetricMap = janHasReportSum
+              ? pageMetricsFromReports(janReports, allowSet)
+              : pageMetricsFromPages(janPages, allowSet);
+            const aprMetricMap = aprHasReportSum
+              ? pageMetricsFromReports(aprReports, allowSet)
+              : pageMetricsFromPages(aprPages, allowSet);
+            const archPageCompare = [...allowSet.values()]
+              .map((key) => {
+                const janM = janMetricMap.get(key) || { page: "", imp: 0, clk: 0, top10KwCount: 0, top5KwImp: 0 };
+                const aprM = aprMetricMap.get(key) || { page: "", imp: 0, clk: 0, top10KwCount: 0, top5KwImp: 0 };
+                const page = aprM.page || janM.page || "";
+                return {
+                  page,
+                  janImp: Number(janM.imp || 0),
+                  aprImp: Number(aprM.imp || 0),
+                  janClk: Number(janM.clk || 0),
+                  aprClk: Number(aprM.clk || 0),
+                  janTop10Cnt: Number(janM.top10KwCount || 0),
+                  aprTop10Cnt: Number(aprM.top10KwCount || 0),
+                  janTop5KwImp: Number(janM.top5KwImp || 0),
+                  aprTop5KwImp: Number(aprM.top5KwImp || 0),
+                };
+              })
+              .filter((x) => x.page)
+              .sort((a, b) => b.aprImp - a.aprImp);
+
+            archComparison = { janSum, aprSum: aprSumArch, janKw, aprKw: aprKwArch, janTopPages, aprTopPages, archPageCompare };
+          }
+        } catch (archErr) {
+          const note = document.getElementById("status");
+          if (note) note.textContent = `架構頁對比暫時無法更新（${archErr.message}），主報表仍會更新`;
+        }
+
+        status.textContent = "更新中：抓 P.07 關鍵字建議...";
+        let actionPlan = null;
+        let fallbackActionPlan = null;
+        try {
+          const rawAction = localStorage.getItem(ACTION_CACHE_KEY);
+          if (rawAction) fallbackActionPlan = JSON.parse(rawAction)?.actionPlan || null;
+        } catch (_) {}
+        const prevPayload = getFirstAvailableCache();
+        if (prevPayload) {
+          try {
+            const prevParsed = JSON.parse(prevPayload.raw);
+            fallbackActionPlan = fallbackActionPlan || prevParsed?.model?.actionPlan || null;
+          } catch (_) {}
+        }
+        try {
+          actionPlan = await fetchKeywordActionPlanLinked();
+        } catch (actionErr) {
+          actionPlan = fallbackActionPlan;
+          const actionStatus = document.getElementById("actionFetchStatus");
+          if (actionStatus) actionStatus.textContent = `P.07 抓取失敗（不影響主報表快取）：${actionErr.message}`;
+        }
+
+        const unmatched = (apr.matching && apr.matching.unmatched_page_count) || 0;
+        const model = {
+          ts: new Date().toISOString(), novSum, aprSum, fullNovSum, fullAprSum, novCtr, aprCtr, novPos, aprPos, novKw, aprKw, siteTopRows, rows, newImp, newClk, oldImp, oldClk, totalImp, totalClk, unmatched, articleRows, oldArticleCompareRows, archComparison, actionPlan,
+          actionPlanMeta: getLinkedActionMeta()
+        };
+        if (model.actionPlan && model.actionPlanMeta) {
+          localStorage.setItem(ACTION_CACHE_KEY, JSON.stringify({ actionPlan: model.actionPlan, actionPlanMeta: model.actionPlanMeta }));
+        }
+        currentData = model;
+        localStorage.setItem(CACHE_KEY, JSON.stringify({ model, ranking: currentRanking || null }));
+        const cacheWritten = !!localStorage.getItem(CACHE_KEY);
+        setCacheInfo(cacheWritten ? `已更新（${new Date(model.ts).toLocaleString("zh-TW")}）` : "寫入失敗");
+        paintFromData(model);
+        status.textContent = cacheWritten
+          ? `更新完成：${new Date().toLocaleString("zh-TW")}（2025/11 vs 2026/04，未匹配 ${unmatched}）`
+          : "更新完成但快取寫入失敗（請檢查瀏覽器本機儲存權限）";
+        const issues = validateFrontendUpdate();
+        if (issues.length) {
+          status.textContent += `；前端檢查異常：${issues.join("、")}`;
+        }
+        return true;
+      } catch (err) {
+        const hasCache = !!getFirstAvailableCache();
+        if (hasCache) {
+          restoreCache();
+          status.textContent = `更新失敗，已改用快取資料顯示：${err.message}`;
+        } else {
+          status.textContent = `更新失敗：${err.message}`;
+        }
+        console.error(err);
+        return false;
+      }
+    }
+
+    function restoreCache() {
+      const status = document.getElementById("status");
+      try {
+        const picked = getFirstAvailableCache();
+        if (!picked) throw new Error("目前沒有可還原快取");
+        const parsed = JSON.parse(picked.raw);
+        const model = parsed && parsed.model ? parsed.model : parsed; // backward compatibility
+        const linkedAction = getActionCache();
+        if (linkedAction?.actionPlan) model.actionPlan = linkedAction.actionPlan;
+        if (linkedAction?.actionPlanMeta) model.actionPlanMeta = linkedAction.actionPlanMeta;
+        currentData = model;
+        paintFromData(model);
+        if (parsed && parsed.ranking) {
+          currentRanking = parsed.ranking;
+          renderRankingPage(currentRanking);
+          renderCharts(currentData, currentRanking);
+        }
+        setCacheInfo(`已還原（${new Date(model.ts).toLocaleString("zh-TW")}）`);
+        status.textContent = parsed && parsed.ranking ? "已從快取還原（含關鍵字排名）" : "已從快取還原";
+      } catch (e) {
+        status.textContent = `還原失敗：${e.message}`;
+      }
+    }
+
+    function clearCache() {
+      localStorage.removeItem(CACHE_KEY);
+      localStorage.removeItem(ACTION_CACHE_KEY);
+      setCacheInfo("已清除");
+      document.getElementById("status").textContent = "快取已清除";
+    }
+
+    function drawEmptyCharts() {
+      const fallback = { novSum: { imp: 0, clk: 0 }, aprSum: { imp: 0, clk: 0 }, novKw: { top10: 0 }, aprKw: { top10: 0, top3: 0 }, rows: [], newImp: 0, oldImp: 0 };
+      renderCharts(fallback, null);
+    }
+
+    async function exportHtmlReport() {
+      const btn = document.getElementById("exportHtmlBtn");
+      const status = document.getElementById("status");
+      const originText = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = "輸出中...";
+      try {
+        const now = new Date();
+        const stamp = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}_${String(now.getHours()).padStart(2, "0")}${String(now.getMinutes()).padStart(2, "0")}${String(now.getSeconds()).padStart(2, "0")}`;
+        const clonedDoc = document.documentElement.cloneNode(true);
+        const srcImgs = Array.from(document.querySelectorAll("img"));
+        const dstImgs = Array.from(clonedDoc.querySelectorAll("img"));
+        const blobToDataUrl = (blob) => new Promise((resolve, reject) => {
+          const fr = new FileReader();
+          fr.onload = () => resolve(fr.result);
+          fr.onerror = reject;
+          fr.readAsDataURL(blob);
+        });
+        for (let i = 0; i < dstImgs.length; i += 1) {
+          const dst = dstImgs[i];
+          const src = srcImgs[i];
+          if (!dst || !src) continue;
+          const srcUrl = src.currentSrc || src.getAttribute("src") || "";
+          if (!srcUrl || srcUrl.startsWith("data:")) continue;
+          try {
+            const resp = await fetch(srcUrl);
+            if (!resp.ok) continue;
+            const blob = await resp.blob();
+            const dataUrl = await blobToDataUrl(blob);
+            dst.setAttribute("src", dataUrl);
+          } catch (_) {}
+        }
+        const srcCanvases = Array.from(document.querySelectorAll("canvas"));
+        const dstCanvases = Array.from(clonedDoc.querySelectorAll("canvas"));
+        dstCanvases.forEach((dst, idx) => {
+          const src = srcCanvases[idx];
+          if (!src) return;
+          try {
+            const img = document.createElement("img");
+            const chartId = src.id || "";
+            const chartObj = chartId ? charts[chartId] : null;
+            img.src = chartObj && typeof chartObj.toBase64Image === "function"
+              ? chartObj.toBase64Image()
+              : src.toDataURL("image/png");
+            img.alt = src.id || "chart";
+            img.style.width = "100%";
+            img.style.height = "100%";
+            dst.replaceWith(img);
+          } catch (_) {}
+        });
+        clonedDoc.querySelectorAll(".toolbar button").forEach((node) => node.remove());
+        const caseView = clonedDoc.querySelector("#viewCase");
+        const rankView = clonedDoc.querySelector("#viewRank");
+        if (caseView) caseView.classList.remove("hidden");
+        if (rankView) rankView.classList.remove("hidden");
+        const rankRowsTbody = clonedDoc.querySelector("#rankRows");
+        const rankPageInfo = clonedDoc.querySelector("#rankPageInfo");
+        const rankPrevBtn = clonedDoc.querySelector("#rankPrevBtn");
+        const rankNextBtn = clonedDoc.querySelector("#rankNextBtn");
+        if (rankRowsTbody && currentRanking) {
+          const allRows = getSortedRankingRows(currentRanking);
+          rankRowsTbody.innerHTML = allRows.length
+            ? allRows.map(x => `<tr><td>${x.kw}</td><td>${x.m2 ?? "-"}</td><td>${x.m3 ?? "-"}</td><td>${x.m4 ?? "-"}</td><td>${x.url}</td></tr>`).join("")
+            : `<tr><td colspan="5">無排名資料</td></tr>`;
+          if (rankPageInfo) rankPageInfo.textContent = `共 ${fmtNum(allRows.length)} 筆（匯出全量）`;
+        }
+        if (rankPrevBtn) rankPrevBtn.remove();
+        if (rankNextBtn) rankNextBtn.remove();
+        // Export as static snapshot so ranking/report data won't be re-fetched and overridden.
+        clonedDoc.querySelectorAll("script").forEach((node) => node.remove());
+        const html = "<!doctype html>\n" + clonedDoc.outerHTML;
+        const filename = `miko3C_report_${stamp}.html`;
+        const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+        if (window.showSaveFilePicker) {
+          const handle = await window.showSaveFilePicker({
+            suggestedName: filename,
+            types: [{ description: "HTML", accept: { "text/html": [".html"] } }]
+          });
+          const writable = await handle.createWritable();
+          await writable.write(blob);
+          await writable.close();
+          status.textContent = `已輸出 HTML：${filename}`;
+        } else {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+          status.textContent = `已輸出 HTML：${filename}`;
+        }
+      } catch (err) {
+        status.textContent = `輸出失敗：${err.message}`;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = originText;
+      }
+    }
+
+    document.getElementById("refreshBtn").addEventListener("click", runUpdate);
+    document.getElementById("loadXlsxBtn").addEventListener("click", () => {
+      const input = document.getElementById("xlsxFileInput");
+      input.value = "";
+      input.click();
+    });
+    document.getElementById("xlsxFileInput").addEventListener("change", (e) => {
+      const f = e.target.files && e.target.files[0];
+      if (f) {
+        loadRankingDataFromFile(f);
+      } else {
+        loadRankingData();
+      }
+    });
+    document.getElementById("restoreCacheBtn").addEventListener("click", restoreCache);
+    document.getElementById("clearCacheBtn").addEventListener("click", clearCache);
+    document.getElementById("exportHtmlBtn").addEventListener("click", exportHtmlReport);
+    document.getElementById("tabCase").addEventListener("click", () => switchTab("case"));
+    document.getElementById("tabRank").addEventListener("click", () => switchTab("rank"));
+    document.getElementById("rankSortField").addEventListener("change", (e) => {
+      rankSortField = e.target.value;
+      renderRankingPage(currentRanking);
+      persistCacheSnapshot();
+    });
+    document.getElementById("rankSortMonth").addEventListener("change", (e) => {
+      rankSortMonth = e.target.value;
+      renderRankingPage(currentRanking);
+      persistCacheSnapshot();
+    });
+    document.getElementById("rankSortDir").addEventListener("change", (e) => {
+      rankSortDir = e.target.value;
+      renderRankingPage(currentRanking);
+      persistCacheSnapshot();
+    });
+    document.getElementById("rankPrevBtn").addEventListener("click", () => {
+      rankPage -= 1;
+      renderRankingPage(currentRanking);
+      persistCacheSnapshot();
+      const footer = document.getElementById("rankPageInfo");
+      if (footer) footer.scrollIntoView({ behavior: "smooth", block: "end" });
+    });
+    document.getElementById("rankNextBtn").addEventListener("click", () => {
+      rankPage += 1;
+      renderRankingPage(currentRanking);
+      persistCacheSnapshot();
+      const footer = document.getElementById("rankPageInfo");
+      if (footer) footer.scrollIntoView({ behavior: "smooth", block: "end" });
+    });
+
+    drawEmptyCharts();
+    renderBrandMonthlyTrafficChart().catch(() => {});
+    loadRankingData().catch(() => {});
+    setCacheInfo(getFirstAvailableCache() ? "可還原" : "無");
+    if (getFirstAvailableCache()) {
+      restoreCache();
+    } else {
+      runUpdate().catch(() => {});
+    }
+    switchTab("case");
+  </script>
+</body>
+
+</html>
