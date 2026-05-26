@@ -1,4 +1,4 @@
 FROM nginx:alpine
 COPY . /usr/share/nginx/html
-EXPOSE 80
+COPY default.conf.template /etc/nginx/templates/default.conf.template
 CMD ["nginx", "-g", "daemon off;"]
